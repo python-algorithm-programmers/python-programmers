@@ -25,7 +25,6 @@ def solution(cacheSize, cities):
                 cache_list.append(city.lower())
 
             elif len(cache_list) < cacheSize:
-                cache_list.remove(city.lower())
                 cache_list.append(city.lower())
 
     return answer
