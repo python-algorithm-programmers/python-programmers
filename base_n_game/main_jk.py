@@ -28,6 +28,7 @@ def decimal_to_base_n(number, base_n):
 def solution(n, t, m, p):
     total_num = []
     # 먼저 n진수로 쭉 수를 늘여놓은 다음에 mk+p배수에 있는 걸 솎아내는 식으로
+    # 왜냐하면, 10진수 숫자 늘어나는 속도보다 n진수로 늘어나는 속도가 더 느리기 때문
     for i in range(0, t*m):
         total_num.extend(decimal_to_base_n(i,n))
 
