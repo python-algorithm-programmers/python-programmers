@@ -3,13 +3,16 @@ import sys
 # 모든 입력을 줄 단위로 읽어서 리스트로 저장
 lines = sys.stdin.readlines()
 hour, minute = lines[0].strip().split(' ')
+hour, minute = int(hour), int(minute)
 
-# 양쪽 끝의 공백을 제거 = strip()
-num_list = [int(num.strip()) for num in lines]
-remainder_list = []
-for num in num_list:
-    remainder = num % 42
-    if remainder not in remainder_list:
-        remainder_list.append(remainder)
+# 시간 빼기
+minute -= 45
+if minute < 0:
+    minute += 60
+    hour -= 1
+    if hour < 0:
+        hour += 24
 
-print(len(remainder_list))
+    print(f"{hour} {minute}")
+else:
+    print(f"{hour} {minute}")
