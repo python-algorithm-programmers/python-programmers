@@ -59,13 +59,52 @@ def get_linked_list_sum(linked_list_1, linked_list_2):
     sum_2 = get_single_sum(linked_list_2)
     return sum_1 + sum_2
 
+def josephus_problem(n, k):
+    # first setting
+    link = LinkedList(1)
+    for i in range(2, n+1):
+        link.append(i)
+
+    # 꼬리 잇기
+    result_list = []
+    tail = link.get_node(n - 1)
+    tail.next = link.head
+
+    # head change
+    while n > 0:
+        # k번째 노드 연결 삭제
+        result_list.append(link.get_node(k-1).data)
+        link.delete_node(k-1)
+
+        # head 바꾸기
+        k_node = link.get_node(k-1)
+        link.head = k_node
+
+        # 노드 갯수 감소
+        n -= 1
+
+        # 노드 없으면 종료
+        if n == 0:
+            break
+
+    print("<", ", ".join(map(str, result_list)), ">", sep='')
+
+def solution(n, k):
+    circle_list = [i for i in range(1, n+1)]
+    result_list = []
+    next_index = k-1
+
+    while circle_list:
+        result = circle_list.pop(next_index)
+        result_list.append(result)
+        if len(circle_list) != 0:
+            next_index = (next_index + k-1) % len(circle_list)
+
+    return f"<{', '.join(map(str,result_list))}>"
+
+
 if __name__ == '__main__':
-    linked_list_1 = LinkedList(6)
-    linked_list_1.append(7)
-    linked_list_1.append(8)
-
-    linked_list_2 = LinkedList(3)
-    linked_list_2.append(5)
-    linked_list_2.append(4)
-
-    print(get_linked_list_sum(linked_list_1, linked_list_2))
+    import sys
+    # sys.stdin = open('input.txt')
+    n, k = map(int, input().split())
+    print(solution(n, k))
