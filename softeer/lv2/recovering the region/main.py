@@ -1,7 +1,8 @@
-# 구역을 어떻게 나눌 것인가?
 
 def solution(N, maps):
-    return
+    for i in range(N):
+        result = [str(i) for _ in range(N)]
+        print(" ".join(result))
 
 if __name__ == "__main__":
     import sys
@@ -10,4 +11,4 @@ if __name__ == "__main__":
 
     # maps
     maps = [list(map(int, line.strip().split(" "))) for line in lines]
-    print(solution(N, maps))
+    solution(N, maps)
