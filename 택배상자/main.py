@@ -5,47 +5,32 @@ from collections import deque
 # stack: tmp
 
 def solution(order):
-    # step 1: tmp 위치시키기
-    belt = [i+1 for i in range(len(order))]
-    belt_q = deque(belt)
-    order_q = deque(order)
+    n = len(order)
+    order_idx = 0
+    belt_idx = 1
     tmp_stack = []
-    result = []
 
-    # tmp 위치시키지 않고도 작업이 가능한 경우
-    while order_q:
-        # 첫 숫자 전까지 tmp_stack에 저장
-        first_order = order_q.popleft()
+    while order_idx < n:
+        # 그냥 belt에서 가져다 쓸 수 있는 경우
+        if belt_idx == order[order_idx]:
+            belt_idx += 1
+            order_idx += 1
 
-        # belt에서 first_one 위치확인
-        first_order_idx = belt_q.index(first_order)
+        # 보조 벨트에서 가져다 쓰는 경우
+        elif tmp_stack and tmp_stack[-1] == order[order_idx]:
+            tmp_stack.pop()
+            order_idx += 1
 
-        # 보조 벨트를 안써도 되는 경우
-        if first_order_idx == 0:
-            first_belt_one = belt_q.popleft()
-            result.append(first_belt_one)
+        # 보조 벨트에 넣기
+        elif belt_idx <= n:
+            tmp_stack.append(belt_idx)
+            belt_idx += 1
 
-        # 보조 벨트를 써야되는 경우
+        # 아웃
         else:
-            for j in range(first_order_idx):
-                belt_thing = belt_q.popleft()
-                tmp_stack.append(belt_thing)
+            break
 
-            # 보조 벨트에서 가져올 지 확인
-            if tmp_stack[-1] == first_order:
-                last_tmp_one = tmp_stack.pop()
-                result.append(last_tmp_one)
-
-            # 직접 벨트에서 가져옴
-            elif belt_q[0] == first_order:
-                first_belt_thing = belt_q.popleft()
-                result.append(first_belt_thing)
-
-            # 가져올 수 없는 경우
-            else:
-                break
-
-    return result
+    return order_idx
 
 if __name__ == "__main__":
     order = [4, 3, 1, 2, 5]
