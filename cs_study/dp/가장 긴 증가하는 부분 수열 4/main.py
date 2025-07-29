@@ -5,6 +5,7 @@ def solution(N, numbers):
         for j in range(i):
             if numbers[j] < numbers[i]:
                 # 이전 인덱스의 배열을 그대로 가져와서 현재 숫자를 붙임
+                # 파이썬 내 리스트는 이렇게 작업이 가능함
                 new_seq = result_dict[j] + [numbers[i]]
                 max_check_list.append(new_seq)
 
