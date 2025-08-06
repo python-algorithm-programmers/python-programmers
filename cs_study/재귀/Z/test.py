@@ -1,8 +1,4 @@
-import sys
-sys.setrecursionlimit(10**7)
-input = sys.stdin.readline
-
-def dfs(r, c, idx, N, directions, dest_y, dest_x, close_flag, answer):
+def dfs (r, c, idx, N, directions, dest_y, dest_x, close_flag, answer):
     # 1) 이미 찾았다면 바로 종료
     if close_flag[0]:
         return
@@ -11,6 +7,7 @@ def dfs(r, c, idx, N, directions, dest_y, dest_x, close_flag, answer):
     if N == 1:
         for dy, dx in directions:
             go_y, go_x = r + dy, c + dx
+            # 찾았으면 바로 복귀
             if go_y == dest_y and go_x == dest_x:
                 close_flag[0] = True
                 answer[0] = idx[0]
@@ -18,20 +15,17 @@ def dfs(r, c, idx, N, directions, dest_y, dest_x, close_flag, answer):
             idx[0] += 1
         return
 
-    # 3) 다음 쪼개질 사분면 크기와 한 사분면의 칸 수
-    half = 2 ** (N - 1)
+    # 3) 필요한 부분만 백트래킹으로 찾기
+    half = 2 ** (N-1)
     block_size = half * half
+    half_directions = [(0,0), (0,half), (half,0), (half,half)]
 
-    # 4) 네 사분면 순회: (0,0), (0,half), (half,0), (half,half)
-    for dr, dc in ((0,0), (0,half), (half,0), (half,half)):
-        nr, nc = r + dr, c + dc
+    # 찾으면 그쪽으로 진입
+    for ny, nx in half_directions:
+        if ny<=dest_y<ny+half and nx<=dest_x<nx+half:
+            dfs(ny, nx, idx, N-1, directions, dest_y, dest_x, close_flag, answer)
 
-        # 4-1) 목적지가 이 사분면 안에 있으면 재귀 진입
-        if nr <= dest_y < nr + half and nc <= dest_x < nc + half:
-            dfs(nr, nc, idx, N-1, directions, dest_y, dest_x, close_flag, answer)
-            return
-
-        # 4-2) 아니면, 이 사분면 전체를 스킵—인덱스만 증가
+        # 못 찾으면 다음번으로 이동
         idx[0] += block_size
 
 def solution(N, dest_y, dest_x):
