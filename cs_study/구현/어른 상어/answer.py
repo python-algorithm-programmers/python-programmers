@@ -1,78 +1,83 @@
-def solution(N, M, K, maps, cur_dir, dir_choice):
-    # 현재 위치, 냄새, 상어 목록
-    cur_loc = [[] for _ in range(M+1)]                          # 1..M
-    smell_maps = [[[0,0] for _ in range(N)] for _ in range(N)]  # [주인, 남은시간]
-    cur_sharks = [i for i in range(1, M+1)]
+def solution(N, M, K, maps, cur_dir, dir_order):
+    smell_maps = [[[0,0] for _ in range(N)] for _ in range(N)]
+    cur_place = [[0,0] for _ in range(M+1)]
+
+    # 초기 냄새: K 로 시작 (기존 K-1 → K)
+    for r in range(N):
+        for c in range(N):
+            if maps[r][c] != 0:
+                shark_num = maps[r][c]
+                smell_maps[r][c] = [shark_num, K]   # ← 여기 수정
+                cur_place[shark_num] = [r,c]
+
     turn = 0
+    sharks_list = [i for i in range(1,M+1)]
+    while len(sharks_list) > 1:
 
-    # 초기 위치/냄새 세팅 (초기 냄새는 K)
-    for i in range(1, M+1):
-        for r in range(N):
-            for c in range(N):
-                if maps[r][c] == i:
-                    cur_loc[i] = [r, c]
-                    smell_maps[r][c] = [i, K]
-
-    # 시뮬레이션
-    while len(cur_sharks) > 1 and turn < 1000:
-        turn += 1
-
-        # 1) 이번 턴 이동 후보 모으기(이전 턴 냄새만 보고 결정)
-        next_pos = {}            # (r,c) -> [여기로 오려는 상어 번호들]
-        next_dir = [0]*(M+1)     # 각 상어의 새 방향
-        new_loc  = [None]*(M+1)  # 각 상어의 새 좌표
-
-        for i in cur_sharks[:]:  # 순회 중 삭제 영향 없게 사본으로
-            r, c = cur_loc[i]
-            pri_dirs = dir_choice[i][cur_dir[i]]  # 이 상어의 현재 방향 기준 우선순위 4개 (이미 (dy,dx))
+        # -----------------------
+        # 1) 모든 상어 이동: 후보만 쌓기
+        # -----------------------
+        for shark_idx in sharks_list[:]:
+            start_y, start_x = cur_place[shark_idx]
+            directions = dir_order[shark_idx][cur_dir[shark_idx]]
 
             moved = False
-            # 1-1) 빈 냄새 칸 우선
-            for dy, dx in pri_dirs:
-                ny, nx = r+dy, c+dx
-                if 0 <= ny < N and 0 <= nx < N and smell_maps[ny][nx][0] == 0:
-                    new_loc[i] = [ny, nx]
-                    next_dir[i] = rev_dir[(dy,dx)]
-                    next_pos.setdefault((ny, nx), []).append(i)
+            # (a) 빈칸 우선
+            for direction in directions:
+                dy, dx = dir_mapper[direction]
+                ny, nx = start_y+dy, start_x+dx
+                if 0<=ny<N and 0<=nx<N and smell_maps[ny][nx][0] == 0:
+                    smell_maps[ny][nx].append(shark_idx)   # 후보만 쌓기
+                    cur_place[shark_idx] = [ny, nx]
+                    cur_dir[shark_idx] = direction
                     moved = True
                     break
-            if moved:
-                continue
 
-            # 1-2) 없으면 자기 냄새 칸
-            for dy, dx in pri_dirs:
-                ny, nx = r+dy, c+dx
-                if 0 <= ny < N and 0 <= nx < N and smell_maps[ny][nx][0] == i:
-                    new_loc[i] = [ny, nx]
-                    next_dir[i] = rev_dir[(dy,dx)]
-                    next_pos.setdefault((ny, nx), []).append(i)
-                    moved = True
-                    break
-            # 문제 조건상 항상 한 칸을 고를 수 있음
+            # (b) 빈칸 없으면 자기 냄새로 (여기도 append만!)
+            if not moved:
+                for direction in directions:
+                    dy, dx = dir_mapper[direction]
+                    ny, nx = start_y+dy, start_x+dx
+                    if 0<=ny<N and 0<=nx<N and smell_maps[ny][nx][0] == shark_idx:
+                        smell_maps[ny][nx].append(shark_idx)   # ← 기존의 [id,K] 대입을 append로 변경
+                        cur_place[shark_idx] = [ny, nx]
+                        cur_dir[shark_idx] = direction
+                        break
 
-        # 2) 충돌 처리: 같은 칸이면 번호 작은 상어만 살림
-        alive = []
-        for cell, sharks in next_pos.items():
-            winner = min(sharks)
-            alive.append(winner)
-        cur_sharks = sorted(alive)
-
-        # 3) 냄새 감소
+        # -----------------------
+        # 2) 먼저 기존 냄새 1 감소
+        # -----------------------
         for r in range(N):
             for c in range(N):
-                if smell_maps[r][c][1] > 0:
+                if smell_maps[r][c][0] != 0 and smell_maps[r][c][1] > 0:
                     smell_maps[r][c][1] -= 1
                     if smell_maps[r][c][1] == 0:
-                        smell_maps[r][c][0] = 0
+                        smell_maps[r][c][0] = 0  # 냄새 소멸
 
-        # 4) 위치/방향 갱신 + 새 냄새 남김
-        for i in cur_sharks:
-            r, c = new_loc[i]
-            cur_loc[i] = [r, c]
-            cur_dir[i] = next_dir[i]
-            smell_maps[r][c] = [i, K]
+        # -----------------------
+        # 3) 충돌/단독 도착 처리 + 새 냄새 K 로 세팅
+        # -----------------------
+        for r in range(N):
+            for c in range(N):
+                if len(smell_maps[r][c]) > 2:
+                    candidates = smell_maps[r][c][2:]
+                    winner = min(candidates)  # 가장 작은 번호 승리
+                    # 패자 제거
+                    for s in candidates:
+                        if s != winner and s in sharks_list:
+                            sharks_list.remove(s)
+                    # 칸을 승자 냄새로 확정
+                    smell_maps[r][c] = [winner, K]
+                else:
+                    # 후보가 없으면 (len==2) 그대로 유지 (owner, ttl)
+                    # 단, len>2가 아닌 칸에서 오래된 append 찌꺼기가 남지 않도록 보장됨
+                    pass
 
-    return -1 if turn >= 1000 and len(cur_sharks) > 1 else turn
+        turn += 1
+        if turn == 1000:
+            return -1
+
+    return turn
 
 if __name__ == "__main__":
     N, M, K = map(int, input().split())
@@ -80,31 +85,21 @@ if __name__ == "__main__":
     for _ in range(N):
         maps.append(list(map(int, input().split())))
 
-    # 현재 몸 방향 지정, 인덱스가 1일 때 1번부터 지정하는 것을 목표
-    cur_dir = list(map(int, input().split()))
-    cur_dir.insert(0,0)
+    # 현재 몸 방향
+    cur_dir = [0]
+    cur_dir.extend(list(map(int, input().split())))
+
+    # 상어별 몸방향 우선순위
+    dir_order = {i:{} for i in range(1, M+1)}
+    for i in range(1, M+1):
+        for j in range(1,5):
+            dir_order[i].setdefault(j, []).extend(list(map(int, input().split())))
+
     dir_mapper = {
-        1: (-1,0),
+        1: (-1, 0),
         2: (1, 0),
         3: (0, -1),
         4: (0, 1)
     }
-    rev_dir = {v: k for k, v in dir_mapper.items()}
 
-    # 몸방향 별 우선순위 저장 딕셔너리
-    dir_choice = {}
-    for i in range(1,M+1):
-        for j in range(1,5):
-            if not dir_choice.get(i):
-                dir_choice[i] = {}
-            if not dir_choice[i].get(j):
-                dir_choice[i][j] = []
-
-            # 여기서 상하좌우를 좌표료 변경
-            raw_dirs = list(map(int, input().split()))
-            real_dirs = []
-            for raw_dir in raw_dirs:
-                real_dirs.append(dir_mapper[raw_dir])
-            dir_choice[i][j] = real_dirs
-
-    print(solution(N, M, K, maps, cur_dir, dir_choice))
+    print(solution(N, M, K, maps, cur_dir, dir_order))
