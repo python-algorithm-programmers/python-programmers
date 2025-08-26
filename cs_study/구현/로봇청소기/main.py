@@ -35,7 +35,7 @@ def solution(N,M,cur_loc,cur_dir,directions,d_to_dir,maps):
             back_dy, back_dx = d_to_dir[back_dir]
             ny, nx = back_dy+cur_y, back_dx+cur_x
             # 벽만 아니면 후진되니깐 2도 허용
-            if 0 <= ny < N and 0 <= nx < N and maps[ny][nx] != 1:
+            if 0 <= ny < N and 0 <= nx < M and maps[ny][nx] != 1:
                 cur_loc = [ny, nx]
             else:
                 return clean_cnt
