@@ -34,7 +34,7 @@ def solution(N,M,maps):
         variants.append(mapper(block))
 
         # 깊은 복사
-        rotate_block = block
+        rotate_block = [row[:] for row in block]
         for _ in range(3):
             # 회전시 고려
             rotate_block = rotate(rotate_block)
