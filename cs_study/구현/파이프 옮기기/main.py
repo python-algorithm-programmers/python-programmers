@@ -11,7 +11,6 @@ def solution(N, maps):
     while queue:
         for _ in range(len(queue)):
             cur_loc_y, cur_loc_x, cur_pos = queue.popleft()
-            visited[cur_loc_y][cur_loc_x] = True
             for dy, dx in pos_dir[cur_pos]:
                 ny, nx = cur_loc_y+dy, cur_loc_x+dx
                 # print(cur_loc_y, cur_loc_x)
@@ -32,7 +31,7 @@ def solution(N, maps):
 
                 if dy==1 and dx==1:
                     if 0<=ny<N and 0<=nx<N and maps[ny][nx]==0 \
-                            and maps[ny][nx-1] == 0 and maps[ny-1][nx]==0:
+                            and maps[cur_loc_y][cur_loc_x+1] == 0 and maps[cur_loc_y+1][cur_loc_x]==0:
                         queue.append((ny,nx, 1))
                     continue
 
