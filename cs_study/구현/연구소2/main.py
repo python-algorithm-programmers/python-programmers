@@ -29,7 +29,7 @@ def solution(N,M,maps):
             copy_maps[virus_y][virus_x] = 3
         queue = deque(virus_combi)
         visited = [[False]*N for _ in range(N)]
-        turn = -1
+        turn = 0
         while queue:
             for _ in range(len(queue)):
                 start_y, start_x = queue.popleft()
@@ -44,8 +44,8 @@ def solution(N,M,maps):
                         # 다른 탐색에 중복 방지
                         copy_maps[ny][nx] = 2
                         visited[ny][nx] = True
-
-            turn += 1
+            if queue:
+                turn += 1
         if 1 in [1 for row in copy_maps if 0 in row]:
             pass
         else:
