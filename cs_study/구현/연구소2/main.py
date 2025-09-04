@@ -25,6 +25,8 @@ def solution(N,M,maps):
     best_turn = []
     for virus_combi in total_choice:
         copy_maps = [row[:] for row in maps]
+        for virus_y, virus_x in virus_combi:
+            copy_maps[virus_y][virus_x] = 3
         queue = deque(virus_combi)
         visited = [[False]*N for _ in range(N)]
         turn = -1
@@ -36,7 +38,7 @@ def solution(N,M,maps):
                 for dy, dx in directions:
                     ny, nx = start_y+dy, start_x+dx
                     if 0<=ny<N and 0<=nx<N and \
-                        not visited[ny][nx] and copy_maps[ny][nx] != 1:
+                        not visited[ny][nx] and (copy_maps[ny][nx] == 0 or copy_maps[ny][nx] == 2):
                         queue.append((ny,nx))
 
                         # 다른 탐색에 중복 방지
