@@ -35,18 +35,19 @@ def solution(N,M,maps):
                 for dy,dx in directions:
                     ny,nx = start_y+dy, start_x+dx
                     if 0<=ny<N and 0<=nx<N and not visited[ny][nx] \
-                        and copy_maps[ny][nx] == 0:
+                        and copy_maps[ny][nx] != 1:
                         queue.append((ny,nx))
-                        copy_maps[ny][nx] = 3
                         visited[ny][nx] = True
+                        if copy_maps[ny][nx] == 0:
+                            copy_maps[ny][nx] = 3
 
                     # 비활성화된 바이러스 주위로 그 바이러스만 갈 수 있는 통로가 있다면
                     # 굳이 활성화 시킬 필요없는 비활성 바이러스위에 바이러스 감염시켜서 건너감
-                    elif 0<=ny<N and 0<=nx<N and not visited[ny][nx] \
-                        and copy_maps[ny][nx] == 2:
-                        queue.append((ny,nx))
-                        visited[ny][nx] = True
-                        copy_maps[ny][nx] = 3
+                    # elif 0<=ny<N and 0<=nx<N and not visited[ny][nx] \
+                    #     and copy_maps[ny][nx] == 2:
+                    #     queue.append((ny,nx))
+                    #     visited[ny][nx] = True
+                    #     copy_maps[ny][nx] = 3
 
             if queue:
                 turn += 1
