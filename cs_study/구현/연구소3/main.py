@@ -1,72 +1,70 @@
-def dfs(idx, cnt, choices, total_choices):
-    if cnt == M:
+def rotate(vectors):
+    return [(dx, -dy) for dy, dx in vectors]
+def dfs(points_idx, points, choices, total_choices):
+    if points_idx == len(points):
         total_choices.append(choices[:])
         return
 
-    if idx == N*N:
-        return
-
-    dfs(idx+1, cnt, choices, total_choices)
-    y, x = idx // N, idx % N
-    if maps[y][x] == 2:
-        choices.append((y,x))
-        dfs(idx+1, cnt+1, choices, total_choices)
+    for i in range(4):
+        y, x, cctv = points[points_idx]
+        choices.append((y, x, cctv, i))
+        dfs(points_idx+1, points, choices, total_choices)
         choices.pop()
 
 def solution(N,M,maps):
-    total_choices = []
-    choices = []
-    dfs(0, 0, choices, total_choices)
+    cctv_cam = {
+        1: [(0,1)],
+        2: [(0,-1), (0,1)],
+        3: [(-1,0), (0,1)],
+        4: [(0,-1), (-1,0), (0,1)],
+        5: [(0,-1), (-1,0), (0,1), (1,0)]
+    }
+    points = []
+    for i in range(N):
+        for j in range(M):
+            if maps[i][j] in [a for a in range(1,6)]:
+                points.append((i,j,maps[i][j]))
+    choices, total_choices = [], []
+    dfs(0, points, choices, total_choices)
 
-    directions = [(-1,0), (1,0), (0,1), (0,-1)]
-    best_turn = []
+    best_cnt = []
     for choice_sel in total_choices:
+        # 조합마다 초기화할 대상
+        visited = [[False] * M for _ in range(N)]
         copy_maps = [row[:] for row in maps]
-        for virus_y, virus_x in choice_sel:
-            copy_maps[virus_y][virus_x] = 3
 
-        visited = [[False] * N for _ in range(N)]
-        queue = deque(choice_sel)
-        turn = 0
-        while queue:
-            for _ in range(len(queue)):
-                start_y, start_x = queue.popleft()
-                visited[start_y][start_x] = True
-                for dy,dx in directions:
-                    ny,nx = start_y+dy, start_x+dx
-                    if 0<=ny<N and 0<=nx<N and not visited[ny][nx] \
-                        and copy_maps[ny][nx] != 1:
-                        queue.append((ny,nx))
+        for y, x, cctv, rotate_num in choice_sel:
+            rotated_vectors = cctv_cam[cctv]
+            for _ in range(rotate_num):
+                rotated_vectors = rotate(rotated_vectors)
+
+            for dy, dx in rotated_vectors:
+                for multi in range(8):
+                    ny, nx = y+dy*multi, x+dx*multi
+                    if ny>=N or nx >=M:
+                        break
+                    # 벽에 막힐 때
+                    if 0<=ny<N and 0<=nx<M and copy_maps[ny][nx] == 6:
+                        break
+                    elif 0<=ny<N and 0<=nx<M and copy_maps[ny][nx] == 0:
+                        copy_maps[ny][nx] = 7
                         visited[ny][nx] = True
-                        if copy_maps[ny][nx] == 0:
-                            copy_maps[ny][nx] = 3
 
-                    # 비활성화된 바이러스 주위로 그 바이러스만 갈 수 있는 통로가 있다면
-                    # 굳이 활성화 시킬 필요없는 비활성 바이러스위에 바이러스 감염시켜서 건너감
-                    # elif 0<=ny<N and 0<=nx<N and not visited[ny][nx] \
-                    #     and copy_maps[ny][nx] == 2:
-                    #     queue.append((ny,nx))
-                    #     visited[ny][nx] = True
-                    #     copy_maps[ny][nx] = 3
+        # 갯수 세기
+        cnt = 0
+        for i in range(N):
+            for j in range(M):
+                if copy_maps[i][j] == 0:
+                    cnt += 1
+        best_cnt.append(cnt)
 
-            if queue:
-                turn += 1
-
-        if 1 in [1 for row in copy_maps if 0 in row]:
-            pass
-        else:
-            best_turn.append(turn)
-
-    best_turn.sort()
-    return best_turn[0] if best_turn else -1
+    #print(best_cnt)
+    best_cnt.sort()
+    return best_cnt[0]
 
 
 if __name__ == "__main__":
-    from collections import deque
-    import sys
-    sys.setrecursionlimit(5000)
-
-    N,M = map(int, input().split())
+    N, M = map(int, input().split())
     maps = []
     for _ in range(N):
         maps.append(list(map(int, input().split())))
