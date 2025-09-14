@@ -3,7 +3,7 @@ def rotate(arr):
 
 def solution(maps):
     cur_loc = 0
-    rotate_dir = [(0,-1), (-1,0), (0,1), (1,0)]
+    rotate_dir = [(0,-1), (1,0), (0,1), (-1,0)]
     y, x = center_y, center_x
     out_send_sum = 0
     sand_maps = [
@@ -16,6 +16,7 @@ def solution(maps):
 
     for i in range(1, N+1):
         repeat = 2 if not i == N else 3
+
         for _ in range(repeat):
             if cur_loc == 4:
                 cur_loc = 0
