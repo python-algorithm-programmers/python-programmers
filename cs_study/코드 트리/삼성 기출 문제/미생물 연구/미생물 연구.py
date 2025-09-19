@@ -120,20 +120,15 @@ def move(mon_maps, mon_size_item, mon_dicts, mon_size):
 
 def result(mon_maps, mon_size):
     answer = 0
-    visited = [[False]*N for _ in range(N)]
     if len(mon_size.items()) == 1:
         return 0
 
-    result_item = list(mon_size.items())
-    result_min, result_max = result_item[0][0], result_item[-1][0]
-
-    for mon_num in range(result_min, result_max+1):
-        result_size = mon_size[mon_num]
+    co_mon = set()
+    for mon_num in mon_size.keys():
+        visited = [[False] * N for _ in range(N)]
         for y in range(N):
             for x in range(N):
                 if mon_maps[y][x] == mon_num and not visited[y][x]:
-                    multi = result_size
-                    co_mon = set()
                     result_q = deque()
                     result_q.append((y,x))
                     while result_q:
@@ -149,13 +144,14 @@ def result(mon_maps, mon_size):
                             # 옆에 다른 것을 찾았을 때
                             elif 0<=ny<N and 0<=nx<N and not visited[ny][nx] and mon_maps[ny][nx] != mon_num \
                                     and mon_maps[ny][nx] != 0:
-                                co_mon.add(mon_maps[ny][nx])
+                                co_mon.add((mon_num, mon_maps[ny][nx]))
                                 visited[ny][nx] = True
 
-                    for co_mon_num in co_mon:
-                        answer += multi * mon_size[co_mon_num]
+    # tuple set에서 중복없이 근접한 세트끼리 곱셈을 합산
+    for first_one, second_one in co_mon:
+        answer += mon_size[first_one] * mon_size[second_one]
 
-    return answer
+    return answer // 2
 
 
 if __name__ == "__main__":
