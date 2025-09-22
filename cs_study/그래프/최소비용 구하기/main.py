@@ -1,14 +1,13 @@
 def solution(N, M, bus_dict, start, end):
-    INF = 10 ** 6
+    INF = 10 ** 9
     dist = [INF] * (N+1)
     dist[start] = 0
     pq = []
     heapq.heappush(pq, (0, start))
     while pq:
         total_cost, cur_city = heapq.heappop(pq)
-
-        if cur_city == end:
-            return total_cost
+        # if cur_city == end:
+        #     return total_cost
 
         # 거르기
         if total_cost > dist[cur_city]:
