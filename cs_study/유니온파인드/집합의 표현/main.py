@@ -13,6 +13,8 @@ def union(a, b):
 
 
 if __name__ == "__main__":
+    import sys
+    sys.setrecursionlimit(10000)
     n, m = map(int, input().split())
     parents = [0] * (n+1)
     for i in range(n+1):
