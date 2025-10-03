@@ -1,7 +1,7 @@
 def find(i):
     if parents[i] != i:
-        return find(parents[i])
-    return i
+        parents[i] = find(parents[i])
+    return parents[i]
 
 def union(a, b):
     x = find(a)
