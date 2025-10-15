@@ -22,9 +22,9 @@ Day1에 2개의 팀을 나누면, day2부터는 4개의 그룹, day3부터는 8�
 3. 결합
 - 하위 분할에서 했던 것을 합쳐서 return
 """
-def bisect_conquer(N, monkey_list, day, all_day, reverse_flag=False):
-    # 마지막 리프 그룹에 도달했을 때
-    if day == 7 or len(monkey_list) == 1:
+def bisect_conquer(N, monkey_list, day, all_day, reverse_flag):
+    # 7일차 되면 도달했을 때
+    if day == 7:
         return
 
     # 원숭이 2개의 그룹 나누기, 대강 절반으로 분할
@@ -45,7 +45,7 @@ def solution(N):
     monkey_list = [i for i in range(N)]
     # 모든 날의 팀 배정을 저장할 변수
     all_day = [["A"] * N for _ in range(7)]
-    bisect_conquer(N, monkey_list, 0, all_day)
+    bisect_conquer(N, monkey_list, 0, all_day, False)
     return ["".join(today) for today in all_day]
 
 
