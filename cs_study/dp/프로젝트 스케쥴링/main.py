@@ -15,6 +15,7 @@ def solution(adj, time_dict, start_point):
         for nxt in adj[pre]:
             indegree_dict[nxt] += 1
 
+    print(indegree_dict)
     result_time = {
         node: 0 for node in time_dict
     }
