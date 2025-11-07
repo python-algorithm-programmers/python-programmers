@@ -15,7 +15,6 @@ def solution(N, adj):
         if indegree_dict[indegree_key] == 0:
             heapq.heappush(queue, indegree_key)
 
-    result.sort()
     # print(indegree_dict)
     # print(adj)
     # print(queue)

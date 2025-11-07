@@ -4,15 +4,15 @@ from collections import deque
 def solution(test_cases):
     for case_dict in test_cases:
         print(case_dict)
-
         indegree_dict = {
             node: 0 for node in range(1, len(case_dict)+1)
         }
-        print(indegree_dict)
+
         for key in indegree_dict:
             for nxt in case_dict.get(key):
                 indegree_dict[nxt] += 1
 
+        print(indegree_dict)
         queue = deque()
         result = []
         for key in indegree_dict:
@@ -32,6 +32,7 @@ def solution(test_cases):
                 if indegree_dict[nxt] == 0:
                     queue.append(nxt)
                     result.append(nxt)
+        print(indegree_dict)
         if len(result) == len(case_dict.keys()):
             print(" ".join(map(str, result)))
         else:
@@ -53,6 +54,7 @@ if __name__ == "__main__":
                 adj_dict[team_rank[i]].append(team_rank[j])
 
         change_cycle = int(input())
+        print(adj_dict)
         for _ in range(change_cycle):
             first, second = map(int, input().split())
 
