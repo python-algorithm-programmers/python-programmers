@@ -82,7 +82,7 @@ def solution(N, box_list, box_find):
         for box_num in box_find:
             h, w, y, x = box_dict[box_num]
             if y < start_y:
-                if not (remove_box_left > x+w or remove_box_right < x):
+                if not (remove_box_left > x+w-1 or remove_box_right < x):
                     affect_box.append(box_num)
 
         # y 순으로 정렬
@@ -174,7 +174,7 @@ def solution(N, box_list, box_find):
         for box_num in box_find:
             h, w, y, x = box_dict[box_num]
             if y < start_y:
-                if not (remove_box_left > x + w or remove_box_right < x):
+                if not (remove_box_left > x + w - 1 or remove_box_right < x):
                     affect_box.append(box_num)
 
         # y 순으로 정렬
