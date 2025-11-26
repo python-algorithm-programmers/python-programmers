@@ -73,14 +73,17 @@ def solution(N, box_list, box_find):
         del box_dict[first_one]
 
         # 중력 작용
-        # 1. 영향을 받는 박스 단위로 처리해야한다
+        # 1. 영향을 받는 박스 단
+        # 위로 처리해야한다
         # 2. 박스가 어디까지 내려갈 수 있는 지 계산
         # 3. 이때, 박스 전체가 다 들어올 수 잇는 지를 확인
         affect_box = []
+        remove_box_left, remove_box_right = start_x, start_x + width -1
         for box_num in box_find:
             h, w, y, x = box_dict[box_num]
             if y < start_y:
-                affect_box.append(box_num)
+                if not (remove_box_left > x+w or remove_box_right < x):
+                    affect_box.append(box_num)
 
         # y 순으로 정렬
         affect_box.sort(key=lambda t: -box_dict[t][2])
@@ -167,10 +170,12 @@ def solution(N, box_list, box_find):
         # 2. 박스가 어디까지 내려갈 수 있는 지 계산
         # 3. 이때, 박스 전체가 다 들어올 수 잇는 지를 확인
         affect_box = []
+        remove_box_left, remove_box_right = start_x, start_x + width - 1
         for box_num in box_find:
             h, w, y, x = box_dict[box_num]
             if y < start_y:
-                affect_box.append(box_num)
+                if not (remove_box_left > x + w or remove_box_right < x):
+                    affect_box.append(box_num)
 
         # y 순으로 정렬
         affect_box.sort(key=lambda t: -box_dict[t][2])
