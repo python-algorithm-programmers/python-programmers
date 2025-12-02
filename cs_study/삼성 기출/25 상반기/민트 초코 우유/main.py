@@ -40,11 +40,13 @@ def solution(N, T, student_map_dict):
                     # group_id 세팅
                     group_id = group_f.copy()
                     r_c = f"{r}_{c}"
-                    group_id.add(r_c)
+                    group_id = sorted(list(group_id))
+                    group_id.append(r_c)
                     group_id = tuple(group_id)
+                    #print(group_id)
 
                     # 튜플화
-                    group_f = tuple(group_f)
+                    group_f = tuple(sorted(list(group_f)))
                     groups[group_id] = []
                     queue = deque([(r,c)])
                     groups[group_id].append((group_b, r, c))
