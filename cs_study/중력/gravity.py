@@ -35,5 +35,3 @@ def gravity(boards):
 
 gravity(boards)
 print(boards)
-
-
