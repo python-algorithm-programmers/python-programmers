@@ -6,9 +6,11 @@ def solution(R, C, golem_dict, K):
     for idx in range(1, K+1):
         r_idx = -1
         end_flag = False
-        print("idx", idx)
+        #print()
+        #print("idx", idx)
         while True:
-            print("column", golem_dict[idx]["c"])
+            #print("column", golem_dict[idx]["c"])
+            #print("r_idx", r_idx)
             golem_c = golem_dict[idx]["c"]
             golem_d = golem_dict[idx]["d"]
 
@@ -23,9 +25,9 @@ def solution(R, C, golem_dict, K):
                     break
 
             elif r_idx == 0:
-                if forest_map[1][golem_c] == 0 \
-                    and forest_map[0][golem_c-1] == 0\
-                    and forest_map[0][golem_c+1] == 0:
+                if forest_map[2][golem_c] == 0 \
+                    and forest_map[1][golem_c-1] == 0\
+                    and forest_map[1][golem_c+1] == 0:
                     r_idx += 1
                     continue
 
@@ -46,25 +48,46 @@ def solution(R, C, golem_dict, K):
                 can_left = False
 
             if can_left:
+                if r_idx == 0:
+                    if forest_map[r_idx][golem_c-1] == 0 \
+                        and forest_map[r_idx][golem_c-2] == 0 \
+                        and forest_map[r_idx+1][golem_c - 1] == 0\
+                        and forest_map[r_idx+1][golem_c - 2] == 0\
+                        and forest_map[r_idx + 2][golem_c - 1] == 0:
+                        # 출구 반시계 이동
+                        golem_dict[idx]["d"] = (golem_d - 1) % 4
+
+                        # 서쪽 이동 반영
+                        golem_dict[idx]["c"] = golem_c - 1
+
+                        # 하단까지 온 경우라면
+                        if r_idx == R - 1:
+                            end_flag = True
+                            break
+                        continue
+
+
                 # 서쪽 이동, 가능하면 내려가고 다시 반복, 불가능하면 내려감
-                if forest_map[r_idx-1][golem_c-1] == 0 \
-                    and forest_map[r_idx][golem_c-2] == 0 \
-                    and forest_map[r_idx+1][golem_c - 1] == 0\
-                    and forest_map[r_idx+1][golem_c - 2] == 0\
-                    and forest_map[r_idx + 2][golem_c - 1] == 0:
-                    r_idx += 1
+                else:
+                    if forest_map[r_idx-1][golem_c-1] == 0 \
+                        and forest_map[r_idx][golem_c-1] == 0 \
+                        and forest_map[r_idx][golem_c-2] == 0 \
+                        and forest_map[r_idx+1][golem_c - 1] == 0\
+                        and forest_map[r_idx+1][golem_c - 2] == 0\
+                        and forest_map[r_idx + 2][golem_c - 1] == 0:
+                        r_idx += 1
 
-                    # 출구 반시계 이동
-                    golem_dict[idx]["d"] = (golem_d - 1) % 4
+                        # 출구 반시계 이동
+                        golem_dict[idx]["d"] = (golem_d - 1) % 4
 
-                    # 서쪽 이동 반영
-                    golem_dict[idx]["c"] = golem_c - 1
+                        # 서쪽 이동 반영
+                        golem_dict[idx]["c"] = golem_c - 1
 
-                    # 하단까지 온 경우라면
-                    if r_idx == R - 1:
-                        end_flag = True
-                        break
-                    continue
+                        # 하단까지 온 경우라면
+                        if r_idx == R - 1:
+                            end_flag = True
+                            break
+                        continue
 
             # 동쪽 이동
             can_right = True
@@ -72,24 +95,46 @@ def solution(R, C, golem_dict, K):
                 can_right = False
 
             if can_right:
-                if forest_map[r_idx - 1][golem_c + 1] == 0 \
+                if r_idx == 0:
+                    if forest_map[r_idx][golem_c + 1] == 0 \
                         and forest_map[r_idx][golem_c + 2] == 0 \
                         and forest_map[r_idx + 1][golem_c + 1] == 0\
                         and forest_map[r_idx + 1][golem_c + 2] == 0\
                         and forest_map[r_idx + 2][golem_c + 1] == 0:
-                    r_idx += 1
+                        r_idx += 1
 
-                    # 출구 시계 이동
-                    golem_dict[idx]["d"] = (golem_d + 1) % 4
+                        # 출구 시계 이동
+                        golem_dict[idx]["d"] = (golem_d + 1) % 4
 
-                    # 동쪽 이동 반영
-                    golem_dict[idx]["c"] = golem_c + 1
+                        # 동쪽 이동 반영
+                        golem_dict[idx]["c"] = golem_c + 1
 
-                    # 하단까지 온 경우라면
-                    if r_idx == R - 1:
-                        end_flag = True
-                        break
-                    continue
+                        # 하단까지 온 경우라면
+                        if r_idx == R - 1:
+                            end_flag = True
+                            break
+                        continue
+
+                else:
+                    if forest_map[r_idx - 1][golem_c + 1] == 0 \
+                        and forest_map[r_idx][golem_c + 1] == 0 \
+                        and forest_map[r_idx][golem_c + 2] == 0 \
+                        and forest_map[r_idx + 1][golem_c + 1] == 0\
+                        and forest_map[r_idx + 1][golem_c + 2] == 0\
+                        and forest_map[r_idx + 2][golem_c + 1] == 0:
+                        r_idx += 1
+
+                        # 출구 시계 이동
+                        golem_dict[idx]["d"] = (golem_d + 1) % 4
+
+                        # 동쪽 이동 반영
+                        golem_dict[idx]["c"] = golem_c + 1
+
+                        # 하단까지 온 경우라면
+                        if r_idx == R - 1:
+                            end_flag = True
+                            break
+                        continue
 
             # 남쪽 -> 서쪽 -> 동쪽 이동 안되면 이건 중단임
             end_flag = True
@@ -112,7 +157,7 @@ def solution(R, C, golem_dict, K):
             # 출구 위치 찾기
             out_dy, out_dx = directions[out_d]
             out_y, out_x = r_idx+out_dy, golem_c+out_dx
-            print("out_where", out_y, out_x)
+            #print("out_where", out_y, out_x)
 
             # 출구 위치에서 4방 뒤져 보고 그 블록의 최댓값 반영
             max_result = 0
@@ -122,17 +167,17 @@ def solution(R, C, golem_dict, K):
                     max_result = max(max_result, golem_dict[forest_map[my][mx]]["result"])
 
 
-            pprint(forest_map)
+            #pprint(forest_map)
             if max_result != 0:
                 golem_dict[idx]["result"] = max_result
                 answer += max_result
-                print("max", max_result)
+                #print("max", max_result)
                 continue
 
             # 주위에 어떠한 블록이 없는 경우
             golem_dict[idx]["result"] = r_idx+1
             answer += golem_dict[idx]["result"]
-            print("solo", golem_dict[idx]["result"])
+            #print("solo", golem_dict[idx]["result"])
     return answer
 
 
