@@ -33,7 +33,7 @@ def comb():
             return
 
         # depth는 선택 수를 의미
-        # 아래는 선택 안하고 다음 것으로 선택햇다는 것을 의미
+        # 아래는 선택 안하고 다음 것으로 넘어갔다는 것을 의미
         dfs(idx+1, depth)
         path.append(nums[idx])
         dfs(idx+1, depth + 1)

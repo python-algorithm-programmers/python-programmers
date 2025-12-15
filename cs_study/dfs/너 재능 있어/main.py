@@ -44,7 +44,7 @@ def solution(N, M, plus_list, minus_list, K):
 
     # 조합별로 값 계산
     candidates = []
-    #print(final)
+    print(final)
     for perm_list in final:
         cal_data = calculate(perm_list, K)
         candidates.append(cal_data)
