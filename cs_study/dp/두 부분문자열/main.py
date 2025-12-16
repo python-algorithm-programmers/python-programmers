@@ -2,6 +2,7 @@ def pprint(arr):
     for row in arr:
         print(row)
 
+# backjohongjun 도 가능
 def solution(input_a, input_b):
     # 공통 문자열의 갯수의 최댓값을 빼주면 됨
     # LCS의 공통 문자열과, 수열 중에서 공통문자열로 풀기
