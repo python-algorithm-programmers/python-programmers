@@ -26,8 +26,8 @@ def solution(N, maps):
     visited = [[False]*N for _ in range(N)]
     map_check = {}
     directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-    min_result = float("inf")
     boundary = {}
+    new_maps = [arr[:] for arr in maps]
 
     """
     1. 섬 탐색
@@ -44,7 +44,7 @@ def solution(N, maps):
                 while queue:
                     start_y, start_x = queue.popleft()
                     # 맵도 id로 바꿔놓기
-                    maps[start_y][start_x] = idx
+                    new_maps[start_y][start_x] = idx
                     map_check.setdefault(idx, set()).add((start_y, start_x))
                     visited[start_y][start_x] = True
                     edge_flag = False
@@ -61,32 +61,46 @@ def solution(N, maps):
                     if edge_flag:
                         boundary[idx].append((start_y, start_x))
 
-
+    #pprint(new_maps)
     """
-    2. 경계면에서 바다로 탐색
+    2. 경계면에서 각기 큐로 바다로 탐색
     """
     #pprint(maps)
     #print(boundary)
+    #visited_dict = {i: [[False]*N for _ in range(N)] for i in range(1, idx+1)}
 
-    visited_dict = {i: [[False]*N for _ in range(N)] for i in range(1, idx+1)}
-    queue = deque()
     # 모든 섬의 경계를 큐에 넣기
     # 한번에 다 넣고 각 지점에서 턴 식으로 찾으면 최소 거리 딱 한개만 나옴
+    queue = deque()
+    INF = N*N
+    answer = INF
+
+    # 해당 섬에서 시작해서, 바다 칸을 몇 칸 지나 현재 칸에 도달했는 가
+    dist = [[INF]*N for _ in range(N)]
     for island_id in boundary:
         for y, x in boundary[island_id]:
-            queue.append((0, island_id, y, x))
+            queue.append((y, x))
+            dist[y][x] = 0
 
     while queue:
-        dis, cur_id, start_y, start_x = queue.popleft()
+        start_y, start_x = queue.popleft()
         for dy, dx in directions:
             ny, nx = start_y+dy, start_x+dx
             if 0 <= ny < N and 0 <= nx < N:
-                if cur_id != maps[ny][nx] and maps[ny][nx] != 0:
-                    return dis
+                # 바다면서 아직 방문 안함
+                if new_maps[ny][nx] == 0 and dist[ny][nx] == INF:
+                    dist[ny][nx] = dist[start_y][start_x] + 1
+                    # 각 큐가 다음 접근 바다 영역에 대해 자기 영역으로 지정
+                    new_maps[ny][nx] = new_maps[start_y][start_x]
+                    queue.append((ny, nx))
 
-                elif maps[ny][nx] == 0 and not visited_dict[cur_id][ny][nx]:
-                    visited_dict[cur_id][ny][nx] = True
-                    queue.append((dis+1, cur_id, ny, nx))
+                # 누가 방문해온 곳에 마주한 경우
+                elif new_maps[ny][nx] != new_maps[start_y][start_x]:
+                    answer = min(answer, dist[ny][nx]+dist[start_y][start_x])
+
+    #print("after")
+    #pprint(new_maps)
+    return answer
 
 
 if __name__ == "__main__":
