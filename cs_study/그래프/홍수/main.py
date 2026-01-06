@@ -15,7 +15,6 @@ def solution(N, adj_dict, out_hole, height_data):
                 can_escape[nxt] = True
                 queue.append(nxt)
 
-    can_escape.pop(0)
     #print(can_escape)
     for i in range(1, N+1):
         if not can_escape[i]:
@@ -39,8 +38,6 @@ if __name__ == "__main__":
         adj_dict[b].append(a)
 
     K = int(input())
-    out_hole = []
-    for _ in range(K):
-        out_hole.append(list(map(int, input().split())))
+    out_hole = list(map(int, input().split()))
 
     print(solution(N, adj_dict, out_hole, height_data))
