@@ -30,6 +30,7 @@ def solution(N, maps):
                         and maps[ny][nx-1] == 0:
                         cnt += dfs(case, [ny, nx])
 
+        # 현재 위치까지 재귀탐색후 얼만큼 경우가 있는 지 지정
         dp[cur_y][cur_x][cur_pos] = cnt
         return cnt
 
