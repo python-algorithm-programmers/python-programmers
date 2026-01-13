@@ -69,6 +69,7 @@ def solution(N, numbers, operators):
     for arr in final:
         arr.sort(reverse=True)
 
+    print(final)
     answer = calculate(final, numbers, operators)
     answer.sort(reverse=True)
     return answer[0]

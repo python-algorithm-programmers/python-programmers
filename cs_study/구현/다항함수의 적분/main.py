@@ -1,5 +1,7 @@
 def solution(numbers):
-    #print(numbers)
+    if numbers[0][0] == 0:
+        return "W"
+
     answer_str = ""
     # 적분하기
     for const, coeff in numbers:
@@ -7,7 +9,7 @@ def solution(numbers):
         const //= (coeff)
         #print(const)
 
-        # 상수부터 넣기
+        # 계수부터 넣기
         if abs(const) != 1:
             # 계수의 음양에 따라 다르게 적용
             if const < 0:
