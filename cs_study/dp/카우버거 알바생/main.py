@@ -1,7 +1,6 @@
 def solution(N, M, K, orders):
     orders.sort(key=lambda x:(x[0], x[1]))
 
-    # 현재 사용한 치즈버거, 감자 튀김 기반 기준 최대 주문 수
    # 현재 사용한 치즈버거, 감자 튀김 -> 최대 주문수
     dp = {
         (0, 0): 0
